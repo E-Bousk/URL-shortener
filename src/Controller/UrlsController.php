@@ -25,7 +25,6 @@ class UrlsController extends AbstractController
 
     /**
      * @Route("/", name="app_home", methods={"GET", "POST"})
-     * @Route("/", name="app_urls_create", methods={"GET", "POST"})
      */
     public function create(Request $request, EntityManagerInterface $em): Response
     {
