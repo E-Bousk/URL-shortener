@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>
+        Yay! Here is your shortened URL:
+        <a href="{{ url('app_urls_show', { shortened: url.shortened }) }}">
+            {{ url('app_urls_show', { shortened: url.shortened }) }}
+        </a>
+    </h1>
+
+    <a href="{{ path('app_home') }}">Go back home</a>
+{% endblock %}
