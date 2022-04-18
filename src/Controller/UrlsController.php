@@ -3,16 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Url;
+use App\Form\UrlFormType;
 use Illuminate\Support\Str;
 use App\Repository\UrlRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Validator\Constraints\Url as UrlConstraint;
 
 class UrlsController extends AbstractController
 {
@@ -28,35 +26,25 @@ class UrlsController extends AbstractController
      */
     public function create(Request $request, EntityManagerInterface $em): Response
     {
-        $form = $this->createFormBuilder()
-            ->add('original', TextType::class, [
-                'label'       => false,
-                'attr'        => [
-                    'placeholder' => 'Enter the URL to shorten here'
-                ],
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'You need to enter an URL.'
-                    ]),
-                    new UrlConstraint([
-                        'message' => 'The URL entered is not valid.'
-                    ])
-                ]
-            ])
-            ->getForm()
-        ;
+        $form = $this->createForm(UrlFormType::class);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $url = $this->urlRepository->findOneBy(['original' => $form['original']->getData()]);
 
+            // if (!$url) {
+            //     $url = (new Url)
+            //         ->setOriginal($form['original']->getData())
+            //         ->setShortened($this->getUniqueShortenedString())
+            //     ;
+            //     $em->persist($url);
+            //     $em->flush();
+            // }
+            
             if (!$url) {
-                $url = (new Url)
-                    ->setOriginal($form['original']->getData())
-                    ->setShortened($this->getUniqueShortenedString())
-                ;
-
+                $url = $form->getData();
+                $url->setShortened($this->getUniqueShortenedString());
                 $em->persist($url);
                 $em->flush();
             }

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UrlRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UrlRepository::class)
@@ -20,6 +21,8 @@ class Url
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
+     * @Assert\NotBlank(message="You need to enter an URL.")
+     * @Assert\Url(message="The URL entered is not valid.")
      */
     private $original;
 
