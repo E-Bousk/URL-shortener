@@ -14,9 +14,10 @@ class UrlFormType extends AbstractType
     {
         $builder
             ->add('original', TextType::class, [
-                'label'       => false,
-                'attr'        => [
-                    'placeholder' => 'Enter the URL to shorten here'
+                'label' => false,
+                'attr'  => [
+                    'placeholder'  => 'Enter the URL to shorten here',
+                    'autocomplete' => 'off'
                 ]
             ])
         ;
