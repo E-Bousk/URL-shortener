@@ -2,6 +2,8 @@
 
 namespace App\Tests\Controller;
 
+use App\Entity\Url;
+use App\Util\Str;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class UrlsControllerTest extends WebTestCase
@@ -41,5 +43,28 @@ class UrlsControllerTest extends WebTestCase
         ]);
 
         $this->assertResponseRedirects();
+    }
+
+    /** @test */
+    public function shortened_version_should_redirect_to_original_url()
+    {
+        $client = static::createClient();
+
+        $em = self::$container->get('doctrine')->getManager();
+
+        $original = 'https://symfony.com';
+        $shortened = Str::random(6);
+
+        $url = (new Url)
+            ->setOriginal($original)
+            ->setShortened($shortened)
+        ;
+
+        $em->persist($url);
+        $em->flush();
+
+        $client->request('GET', '/' . $shortened);
+
+        $this->assertResponseRedirects($original);
     }
 }
