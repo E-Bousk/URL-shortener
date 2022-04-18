@@ -167,4 +167,34 @@ class UrlsControllerTest extends WebTestCase
 
         $this->assertResponseStatusCodeSame(404);
     }
+
+    /** @test */
+    public function original_should_not_be_blank()
+    {
+        $client = static::createClient();
+
+        $crawler = $client->request('GET', '/');
+
+        $form = $crawler->filter('form')->form();
+        $client->submit($form, [
+            'form[original]' => ''
+        ]);
+
+        $this->assertSelectorTextContains('ul > li', 'You need to enter an URL.');
+    }
+
+    /** @test */
+    public function original_should_not_be_a_valid_url()
+    {
+        $client = static::createClient();
+
+        $crawler = $client->request('GET', '/');
+
+        $form = $crawler->filter('form')->form();
+        $client->submit($form, [
+            'form[original]' => 'invalid_url'
+        ]);
+
+        $this->assertSelectorTextContains('ul > li', 'The URL entered is not valid.');
+    }
 }
