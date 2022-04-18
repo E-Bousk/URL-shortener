@@ -67,4 +67,35 @@ class UrlsControllerTest extends WebTestCase
 
         $this->assertResponseRedirects($original);
     }
+
+    /** @test */
+    public function preview_shortened_version_should_works()
+    {
+        $client = static::createClient();
+
+        $em = self::$container->get('doctrine')->getManager();
+
+        $original = 'https://symfony.com';
+        $shortened = Str::random(6);
+
+        $url = (new Url)
+            ->setOriginal($original)
+            ->setShortened($shortened)
+        ;
+
+        $em->persist($url);
+        $em->flush();
+
+        $crawler = $client->request('GET', sprintf('/%s/preview', $shortened));
+
+        // dd($client->getResponse());
+        $this->assertSelectorTextContains('h1', 'Yay! Here is your shortened URL:');
+        $this->assertSelectorTextContains('h1 > a', sprintf('http://localhost/%s', $shortened));
+
+        // dd($crawler->filter('a')->eq(1)->text());
+        $this->assertSame('Go back home', $crawler->filter('a')->eq(1)->text());
+
+        $client->clickLink('Go back home');
+        $this->assertRouteSame('app_home');
+    }
 }
