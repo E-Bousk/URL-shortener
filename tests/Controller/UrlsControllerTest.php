@@ -92,6 +92,19 @@ class UrlsControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h1', 'Yay! Here is your shortened URL:');
         $this->assertSelectorTextContains('h1 > a', sprintf('http://localhost/%s', $shortened));
 
+
+        // ‼ ATTENTION : faux positif ‼ (avec « path() », voir « preview.html.twig »)
+        $this->assertSelectorTextContains('h1 > a[href]', sprintf('http://localhost/%s', $shortened));
+
+        // Bonne solution :
+
+        // avec « path() » (voir « preview.html.twig »)
+        // $this->assertSame(sprintf('/%s', $shortened), $crawler->filter('h1 > a')->attr('href'));
+
+        // avec « url() » (voir « preview.html.twig ») ‼ 
+        $this->assertSame(sprintf('http://localhost/%s', $shortened), $crawler->filter('h1 > a')->attr('href'));
+
+
         // dd($crawler->filter('a')->eq(1)->text());
         $this->assertSame('Go back home', $crawler->filter('a')->eq(1)->text());
 
