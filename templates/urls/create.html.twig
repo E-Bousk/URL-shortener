@@ -4,5 +4,9 @@
     <h1>The best URL shortener out there !</h1>
     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
         {{ form_widget(form) }}
+
+        {# Test avec bouton de soumission (voir « UrlsControllerTest.php ») #}
+        {# <input type="submit" value="Shorten URL"> #}
+        
     {{ form_end(form) }}
 {% endblock %}

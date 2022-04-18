@@ -16,10 +16,13 @@
         <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
         <server name="SYMFONY_PHPUNIT_VERSION" value="9.5" />
 
-        <!-- Valeurs indiquées dans fichier « .env.test » -->
+        <!-- Valeurs indiquée dans fichier « .env.test » -->
         <!-- <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled" /> -->
-        <!-- <env name="DATABASE_URL" value="" /> -->
-        
+
+        <!-- Valeurs indiquée dans fichier « .env.test.local » -->
+        <!-- NOTE : ‼ Il faut échapper le « & » avec « &amp; » ‼ -->
+        <!-- <env name="DATABASE_URL" value="mysql://db_user:db_password@127.0.0.1:3306/db_name?serverVersion=5.7&amp;charset=utf8mb4" /> -->
+
     </php>
 
     <testsuites>
