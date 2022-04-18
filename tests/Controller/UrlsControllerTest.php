@@ -24,25 +24,63 @@ class UrlsControllerTest extends WebTestCase
     }
 
     /** @test */
-    public function form_should_work_with_valid_data()
+    public function create_should_shorten_url_if_that_doesnt_exists_yet()
     {
         $client = static::createClient();
         $crawler = $client->request('GET', '/');
 
         $this->assertResponseIsSuccessful();
 
+        $original = 'https://symfony.com';
+
         // Avec un bouton de soumission (voir « create.html.twig ») :
         // $client->submitForm('Shorten URL', [
-        //     'form[original]' => 'https://symfony.com'
+        //     'form[original]' => $original
         // ]);
 
         // Sans bouton de soumission :
         $form = $crawler->filter('form')->form();
         $client->submit($form, [
-            'form[original]' => 'https://symfony.com'
+            'form[original]' => $original
         ]);
 
-        $this->assertResponseRedirects();
+        $em = static::$container->get('doctrine')->getManager();
+
+        $urlRepository = $em->getRepository(Url::class);
+
+        $url = $urlRepository->findOneBy(compact('original'));
+        // dd($url);
+
+        $this->assertResponseRedirects(sprintf('/%s/preview', $url->getShortened()));
+    }
+
+    /** @test */
+    public function create_should_shorten_url_once()
+    {
+        $client = static::createClient();
+        
+        $em = static::$container->get('doctrine')->getManager();
+        
+        $original = 'https://symfony.com';
+        $url = (new Url)
+            ->setOriginal($original)
+            ->setShortened('test')
+        ;
+        $em->persist($url);
+        $em->flush();
+        
+        $crawler = $client->request('GET', '/');
+
+        $form = $crawler->filter('form')->form();
+        $client->submit($form, [
+            'form[original]' => $original
+        ]);
+
+        $this->assertResponseRedirects('/test/preview');
+    
+        $urlRepository = $em->getRepository(Url::class);
+
+        $this->assertCount(1, $urlRepository->findAll());
     }
 
     /** @test */
@@ -59,7 +97,6 @@ class UrlsControllerTest extends WebTestCase
             ->setOriginal($original)
             ->setShortened($shortened)
         ;
-
         $em->persist($url);
         $em->flush();
 
@@ -92,7 +129,6 @@ class UrlsControllerTest extends WebTestCase
             ->setOriginal($original)
             ->setShortened($shortened)
         ;
-
         $em->persist($url);
         $em->flush();
 
