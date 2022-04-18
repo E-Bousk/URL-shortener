@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Util\Str;
 use App\Entity\Url;
+use Illuminate\Support\Str;
 use App\Repository\UrlRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;

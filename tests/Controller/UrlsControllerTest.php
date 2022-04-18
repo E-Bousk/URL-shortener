@@ -3,7 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Entity\Url;
-use App\Util\Str;
+use Illuminate\Support\Str;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class UrlsControllerTest extends WebTestCase
