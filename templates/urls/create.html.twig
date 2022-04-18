@@ -3,10 +3,16 @@
 {% block body %}
     <h1>The best URL shortener out there !</h1>
     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-        {{ form_widget(form) }}
+        {{ form_widget(form.original) }}
 
         {# Test avec bouton de soumission (voir « UrlsControllerTest.php ») #}
         {# <input type="submit" value="Shorten URL"> #}
+
+        {% for error in form.original.vars.errors %}
+            <div class="error-message">
+                {{ error.message }}
+            </div>
+        {% endfor %}
         
     {{ form_end(form) }}
 {% endblock %}

@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Url;
-use App\Form\UrlFormType;
+use App\Form\UrlType;
 use App\Repository\UrlRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,7 +18,7 @@ class UrlsController extends AbstractController
      */
     public function create(Request $request, EntityManagerInterface $em, UrlRepository $urlRepository): Response
     {
-        $form = $this->createForm(UrlFormType::class);
+        $form = $this->createForm(UrlType::class);
 
         $form->handleRequest($request);
 

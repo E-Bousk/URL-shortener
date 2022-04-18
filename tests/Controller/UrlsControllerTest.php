@@ -18,8 +18,8 @@ class UrlsControllerTest extends WebTestCase
         $this->assertPageTitleSame('URL Shortener');
         $this->assertSelectorTextContains('h1', 'The best URL shortener out there !');
         $this->assertSelectorExists('form');
-        $this->assertSelectorExists('input[id="url_form_original"]');
-        $this->assertSelectorExists('input[name="url_form[original]"]');
+        $this->assertSelectorExists('input[id="url_original"]');
+        $this->assertSelectorExists('input[name="url[original]"]');
         $this->assertSelectorExists('input[placeholder="Enter the URL to shorten here"]');
     }
 
@@ -35,13 +35,13 @@ class UrlsControllerTest extends WebTestCase
 
         // Avec un bouton de soumission (voir « create.html.twig ») :
         // $client->submitForm('Shorten URL', [
-        //     'url_form[original]' => $original
+        //     'url[original]' => $original
         // ]);
 
         // Sans bouton de soumission :
         $form = $crawler->filter('form')->form();
         $client->submit($form, [
-            'url_form[original]' => $original
+            'url[original]' => $original
         ]);
 
         $em = static::$container->get('doctrine')->getManager();
@@ -73,7 +73,7 @@ class UrlsControllerTest extends WebTestCase
 
         $form = $crawler->filter('form')->form();
         $client->submit($form, [
-            'url_form[original]' => $original
+            'url[original]' => $original
         ]);
 
         $this->assertResponseRedirects('/test/preview');
@@ -177,10 +177,10 @@ class UrlsControllerTest extends WebTestCase
 
         $form = $crawler->filter('form')->form();
         $client->submit($form, [
-            'url_form[original]' => ''
+            'url[original]' => ''
         ]);
 
-        $this->assertSelectorTextContains('ul > li', 'You need to enter an URL.');
+        $this->assertSelectorTextContains('div.error-message', 'You need to enter an URL.');
     }
 
     /** @test */
@@ -192,9 +192,9 @@ class UrlsControllerTest extends WebTestCase
 
         $form = $crawler->filter('form')->form();
         $client->submit($form, [
-            'url_form[original]' => 'invalid_url'
+            'url[original]' => 'invalid_url'
         ]);
 
-        $this->assertSelectorTextContains('ul > li', 'The URL entered is not valid.');
+        $this->assertSelectorTextContains('div.error-message', 'The URL entered is not valid.');
     }
 }
